@@ -3193,32 +3193,5 @@
             }
         };
     </script>
-// Gantilah dengan URL Web App yang Anda dapatkan setelah Deploy di Google Apps Script
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4sDwug0k5uH1knQG-9SueDHT6pbRtZ2PQo7y6kpNc4p-L9dIiwYhBFTklqnpCIvZo/exec";
-
-// Contoh fungsi untuk mengirim data absensi (Post)
-async function kirimAbsen(nama, status) {
-    const data = {
-        nama: nama,
-        status: status,
-        waktu: new Date().toISOString()
-    };
-
-    try {
-        const response = await fetch(WEB_APP_URL, {
-            method: "POST",
-            mode: "no-cors", // Penting untuk mengatasi kendala CORS di GitHub Pages
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
-        
-        alert("Absensi berhasil dikirim!");
-    } catch (error) {
-        console.error("Gagal mengirim absensi:", error);
-        alert("Terjadi kesalahan saat mengirim data.");
-    }
-}
 </body>
 </html>
