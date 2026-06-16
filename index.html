@@ -143,6 +143,11 @@
         </div>
     </header>
 
+    <!-- STATUS HUBUNGAN DATABASE GOOGLE DRIVE -->
+    <div id="drive-sync-banner" class="hidden bg-amber-500 text-slate-900 text-center py-2 text-xs font-bold transition-all flex items-center justify-center gap-2">
+        <i class="fa-solid fa-database animate-pulse"></i> Mode Offline: Menghubungkan ke basis data Google Drive Anda...
+    </div>
+
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
 
         <!-- ============================================== -->
@@ -152,8 +157,7 @@
             <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
                 <!-- Header Card -->
                 <div class="bg-gradient-to-r from-emerald-700 to-emerald-800 text-white px-8 py-10 text-center relative overflow-hidden select-none">
-                    <!-- Watermark Centered & Small -->
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl sm:text-3xl font-black tracking-[0.25em] text-emerald-600/30 uppercase z-0 font-sans whitespace-nowrap">
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl sm:text-3xl font-black tracking-[0.25em] text-emerald-600/30 uppercase z-0 font-sans whitespace-nowrap font-optimus">
                         THOLABUDDIN
                     </div>
                     
@@ -217,7 +221,7 @@
         <!-- VIEW 2: GURU PORTAL (PRESENSI) -->
         <!-- ============================================== -->
         <section id="view-guru" class="hidden space-y-6 max-w-4xl mx-auto transition-all duration-300">
-            <!-- Profil Singkat Guru -->
+            <!-- Profil Guru -->
             <div class="bg-white border border-slate-100 rounded-3xl p-6 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                     <img id="guru-profile-pic" src="https://placehold.co/120x120/cbd5e1/64748b?text=Foto+Guru" class="w-16 h-16 rounded-full border-2 border-emerald-500 object-cover shadow">
@@ -294,14 +298,26 @@
                             </div>
                         </div>
 
-                        <!-- Panel Eksekusi & Sesi Info -->
+                        <!-- Panel Eksekusi & Sesi Info & AI Draft Generator -->
                         <div class="pt-4 border-t border-slate-100 flex flex-col items-center gap-4">
-                            <!-- Informasi Jadwal Masuk Hack -->
-                            <div class="text-xs text-slate-500 bg-slate-50 border border-slate-100 px-4 py-2 rounded-2xl text-center w-full max-w-md">
-                                <span class="font-extrabold text-emerald-700 block mb-1">Jadwal Masuk:</span>
-                                <div class="grid grid-cols-2 gap-2 text-[10px]">
-                                    <div>🌅 <strong>Pagi:</strong> Sesi I: 07:30 - 09:00<br>Sesi II: 09:30 - 11:00</div>
-                                    <div>🌇 <strong>Sore:</strong> Sesi I: 13:30 - 14:45<br>Sesi II: 15:15 - 16:30</div>
+                            <div class="flex flex-col sm:flex-row items-center justify-between w-full max-w-lg gap-3">
+                                <!-- Informasi Sesi Kerja -->
+                                <div class="text-xs text-slate-500 bg-slate-50 border border-slate-100 px-4 py-2 rounded-2xl text-center flex-grow">
+                                    <span class="font-extrabold text-emerald-700 block mb-1">Jadwal Masuk:</span>
+                                    <div class="grid grid-cols-2 gap-2 text-[10px]">
+                                        <div>🌅 <strong>Pagi:</strong> Sesi I: 07:30 - 09:00<br>Sesi II: 09:30 - 11:00</div>
+                                        <div>🌇 <strong>Sore:</strong> Sesi I: 13:30 - 14:45<br>Sesi II: 15:15 - 16:30</div>
+                                    </div>
+                                </div>
+
+                                <!-- AI Draft Generator Box -->
+                                <div class="bg-gradient-to-br from-teal-50 to-emerald-50 border border-emerald-100 p-3 rounded-2xl flex flex-col gap-2 w-full sm:w-64">
+                                    <span class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1.5">
+                                        <i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i> AI Permission Draft
+                                    </span>
+                                    <button type="button" onclick="generatePermissionAIPrompt()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-extrabold py-2 px-3 rounded-xl shadow transition duration-200 flex items-center justify-center gap-1.5">
+                                        ✨ Tulis Izin dengan AI
+                                    </button>
                                 </div>
                             </div>
 
@@ -427,7 +443,7 @@
                         <p class="text-xs text-slate-400">Laporan log lengkap yang divalidasi dengan format kalender Hijriyah | <span class="text-emerald-700 font-bold">Total Tatap Muka Terfilter: <span id="total-tm-filtered" class="font-mono bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">0</span> TM</span></p>
                     </div>
 
-                    <!-- Dropdown Filter Laporan & Tombol Ekspor -->
+                    <!-- Dropdown Filter Laporan, Tombol AI Insights, & Tombol Ekspor -->
                     <div class="flex flex-wrap items-center gap-3">
                         <select id="filter-log-type" onchange="renderLogPresensi()" class="bg-slate-50 border border-slate-200 text-slate-600 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
                             <option value="today">Hari Ini (Harian)</option>
@@ -449,6 +465,9 @@
                             <option value="h-11">Dzulqo'dah</option>
                             <option value="h-12">Dzulhijjah</option>
                         </select>
+                        <button type="button" onclick="analyzeAttendanceWithGemini()" class="bg-gradient-to-r from-teal-700 to-emerald-700 hover:from-teal-800 hover:to-emerald-800 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition">
+                            <i class="fa-solid fa-wand-magic-sparkles text-xs"></i> ✨ Analisis AI
+                        </button>
                         <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition">
                             <i class="fa-solid fa-file-excel text-xs"></i> Ekspor CSV (Excel)
                         </button>
@@ -475,9 +494,9 @@
                 </div>
             </div>
 
-            <!-- ============================================================== -->
-            <!-- FITUR: PENGATURAN GEOLOKASI ABSENSI DENGAN PETA INTERAKTIF -->
-            <!-- ============================================================== -->
+            <!-- ============================================== -->
+            <!-- PENGATURAN GEOLOKASI ABSENSI DENGAN PETA INTERAKTIF -->
+            <!-- ============================================== -->
             <div class="bg-white rounded-3xl shadow-md border border-slate-100 p-6">
                 <div class="border-b border-slate-100 pb-4 mb-4">
                     <h4 class="font-black text-sm text-slate-800 tracking-wide uppercase"><i class="fa-solid fa-map-location-dot mr-1.5 text-emerald-600"></i>Pengaturan Titik Pusat & Radius Geofence</h4>
@@ -997,7 +1016,7 @@
 
     <!-- 4. Modal Konfirmasi Hapus Data -->
     <div id="modal-confirm-delete" class="hidden fixed inset-0 z-[100] bg-slate-900/60 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full shadow-2xl overflow-hidden border border-slate-100 p-6 text-center space-y-4">
+        <div class="bg-white rounded-3xl max-sm w-full shadow-2xl overflow-hidden border border-slate-100 p-6 text-center space-y-4">
             <div class="w-16 h-16 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center text-3xl mx-auto shadow-inner">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
@@ -1061,9 +1080,13 @@
     <!-- LOGIKA UTAMA JAVASCRIPT & STATE MANAGEMENT -->
     <!-- ============================================== -->
     <script>
+        // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI
         const GOOGLE_DRIVE_API_URL = "https://script.google.com/macros/s/AKfycbxTYdybUpF3jCxFYXyrdw01zuqg8uQbgLA93yBYRNoLGyouTmpaI59oEvF_uahZYxtb/exec";
         
-        // --- 1. MOCK DATABASE INITIALIZATION ---
+        // Key API Gemini secara internal didistribusikan melalui proxy/environment runtime
+        const apiKey = ""; 
+
+        // --- 1. MOCK DATABASE INITIALIZATION (LOCAL STANDALONE FALLBACK) ---
         const DEFAULT_TEACHERS = [
             {
                 id: "T1",
@@ -1170,11 +1193,15 @@
         };
 
         // --- 2. GLOBAL STATE ---
-        let teachers = JSON.parse(localStorage.getItem('sadig_teachers')) || DEFAULT_TEACHERS;
-        let records = JSON.parse(localStorage.getItem('sadig_records')) || DEFAULT_RECORDS;
-        let configGeofence = JSON.parse(localStorage.getItem('sadig_geofence')) || DEFAULT_GEOFENCE;
-        let currentUser = JSON.parse(localStorage.getItem('sadig_session')) || null;
+        let teachers = DEFAULT_TEACHERS;
+        let records = DEFAULT_RECORDS;
+        let configGeofence = DEFAULT_GEOFENCE;
+        let applicationLogo = "";
+        let applicationLoginLogo = "";
+        let applicationTitle = "PPT DIGITAL SYSTEMS™";
+        let applicationSubtitle = "Pondok Pesantren Tholabuddin";
         
+        let currentUser = null;
         let loginRole = 'guru'; 
         let reportTab = 'weekly'; 
         
@@ -1203,6 +1230,122 @@
                 renderAdminPortal();
             }
         };
+
+        // --- 2.1 SYNC GOOGLE DRIVE DATABASE FUNCTIONS ---
+        async function fetchDatabaseFromDrive() {
+            if (!GOOGLE_DRIVE_API_URL || GOOGLE_DRIVE_API_URL.startsWith("TEMPEL_URL") || GOOGLE_DRIVE_API_URL.trim() === "") {
+                loadFromLocalStorage();
+                return;
+            }
+
+            const banner = document.getElementById('drive-sync-banner');
+            if (banner) banner.classList.remove('hidden');
+
+            try {
+                // Menambahkan redirect: 'follow' dan menghilangkan mode 'no-cors' agar data JSON dapat dibaca dari Apps Script
+                const response = await fetch(GOOGLE_DRIVE_API_URL + "?action=read", {
+                    method: 'GET',
+                    redirect: 'follow',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const db = await response.json();
+                    teachers = db.teachers || DEFAULT_TEACHERS;
+                    records = db.records || DEFAULT_RECORDS;
+                    configGeofence = db.geofence || DEFAULT_GEOFENCE;
+                    applicationLogo = db.logo || "";
+                    applicationLoginLogo = db.loginLogo || "";
+                    applicationTitle = db.appTitle || "PPT DIGITAL SYSTEMS™";
+                    applicationSubtitle = db.appSubtitle || "Pondok Pesantren Tholabuddin";
+
+                    // Amankan data ke penyimpanan lokal cadangan
+                    saveDataToLocalStorage(false);
+                    if (banner) banner.classList.add('hidden');
+                    showToast("Koneksi Google Drive Sinkron & Aktif!", "success");
+                    
+                    // Render ulang komponen visual setelah sinkronisasi berhasil
+                    applyUpdatedDriveStates();
+                } else {
+                    throw new Error("Gagal membaca database drive, respons server: " + response.status);
+                }
+            } catch (err) {
+                console.error("Gagal sinkronisasi Google Drive API. Menggunakan backup lokal:", err);
+                loadFromLocalStorage();
+                if (banner) {
+                    banner.textContent = "⚠️ Koneksi Drive Terputus. Berjalan di Mode Offline Lokal.";
+                    setTimeout(() => banner.classList.add('hidden'), 5000);
+                }
+            }
+        }
+
+        async function saveDatabaseToDrive() {
+            saveDataToLocalStorage(true); // Selalu simpan lokal terlebih dahulu sebagai langkah aman
+
+            if (!GOOGLE_DRIVE_API_URL || GOOGLE_DRIVE_API_URL.startsWith("TEMPEL_URL") || GOOGLE_DRIVE_API_URL.trim() === "") {
+                return;
+            }
+
+            const payload = {
+                action: "write",
+                teachers: teachers,
+                records: records,
+                geofence: configGeofence,
+                logo: applicationLogo,
+                loginLogo: applicationLoginLogo,
+                appTitle: applicationTitle,
+                appSubtitle: applicationSubtitle
+            };
+
+            try {
+                // Mengubah mode menjadi 'no-cors' karena Apps Script Web App memicu redirect ke googleusercontent 
+                // yang tidak selalu meloloskan CORS preflight pada metode POST kustom
+                await fetch(GOOGLE_DRIVE_API_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { 
+                        "Content-Type": "text/plain" 
+                    },
+                    body: JSON.stringify(payload)
+                });
+                console.log("Database berhasil dikirim ke antrean sinkronisasi Google Drive!");
+            } catch (err) {
+                console.error("Kesalahan jaringan saat melakukan POST sinkronisasi Drive:", err);
+            }
+        }
+
+        function loadFromLocalStorage() {
+            teachers = JSON.parse(localStorage.getItem('sadig_teachers')) || DEFAULT_TEACHERS;
+            records = JSON.parse(localStorage.getItem('sadig_records')) || DEFAULT_RECORDS;
+            configGeofence = JSON.parse(localStorage.getItem('sadig_geofence')) || DEFAULT_GEOFENCE;
+            applicationLogo = localStorage.getItem('sadig_logo') || "";
+            applicationLoginLogo = localStorage.getItem('sadig_login_logo') || "";
+            applicationTitle = localStorage.getItem('sadig_title') || "PPT DIGITAL SYSTEMS™";
+            applicationSubtitle = localStorage.getItem('sadig_subtitle') || "Pondok Pesantren Tholabuddin";
+            
+            applyUpdatedDriveStates();
+        }
+
+        function applyUpdatedDriveStates() {
+            updateAppLogos();
+            renderCMSIdentityFields();
+            if (currentUser) {
+                updateIdentityHeader();
+                if (currentUser.role === 'ADMIN') {
+                    renderAdminPortal();
+                } else {
+                    renderSelfPortal();
+                }
+            } else {
+                const selectGuru = document.getElementById('absen-guru-id');
+                if (selectGuru) {
+                    selectGuru.innerHTML = '<option value="">-- Pilih Guru --</option>' + teachers.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+                }
+                switchView('login');
+            }
+        }
 
         // --- 3. HELPER UTILITIES & DATE FUNCTIONS ---
         const HIJRI_MONTHS = [
@@ -1304,7 +1447,7 @@
             return !!(todaySchedule && todaySchedule.class && todaySchedule.subject);
         }
 
-        // --- 4. EXPLICIT GLOBAL FUNCTIONS ---
+        // --- 4. EXPLICIT GLOBAL VIEW SWITCHER ---
         window.switchView = function(viewName) {
             document.getElementById('view-login').classList.add('hidden');
             document.getElementById('view-guru').classList.add('hidden');
@@ -1582,6 +1725,65 @@
             }
         }
 
+        // --- 7.2 GEMINI INTEGRATION: AI WRITING SURAT IZIN GURU ---
+        async function callGeminiAPI(prompt, systemInstruction = "") {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined
+            };
+
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (response.ok) {
+                        const result = await response.json();
+                        return result.candidates?.[0]?.content?.parts?.[0]?.text || "Gagal menghasilkan teks.";
+                    }
+                } catch (e) {
+                    // Retry loop
+                }
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay *= 2;
+            }
+            throw new Error("Koneksi Gemini API terputus. Silakan coba beberapa saat lagi.");
+        }
+
+        window.generatePermissionAIPrompt = async function() {
+            if (!currentUser) return;
+            const inputReason = prompt("Tulis alasan atau kata kunci izin Anda secara singkat:\n(Contoh: anak sakit demam tinggi harus mengantar ke klinik pagi ini)");
+            if (!inputReason || inputReason.trim().length < 5) {
+                alert("Alasan izin terlalu pendek atau dibatalkan.");
+                return;
+            }
+
+            showToast("AI sedang menyusun kalimat izin Anda...", "info");
+
+            const systemPrompt = "Anda adalah asisten administrasi di Pondok Pesantren Tholabuddin. Ubah alasan mentah/singkat guru menjadi draf pengajuan izin tidak mengajar yang sangat sopan, takzim, santun khas pesantren, singkat dan jelas.";
+            const userPrompt = `Nama Ustadz: ${currentUser.name}.\nAlasan singkat: "${inputReason}".\nTulis draf surat izin singkat dan sopan langsung ke teks hasilnya saja.`;
+
+            try {
+                const draft = await callGeminiAPI(userPrompt, systemPrompt);
+                
+                // Masukkan otomatis ke kolom manual izin
+                const manualInput = document.getElementById('absen-izin-manual');
+                const selectHadir = document.getElementById('absen-status-hadir');
+                
+                selectHadir.value = "Izin lainnya (tulis)";
+                window.handleStatusHadirChange("Izin lainnya (tulis)");
+                
+                manualInput.value = draft.trim().replace(/["']/g, "");
+                showToast("Draf surat izin AI berhasil dimasukkan!", "success");
+            } catch (err) {
+                alert("Gagal memproses draf izin AI: " + err.message);
+            }
+        };
+
         window.handleAbsenSubmit = function(e) {
             e.preventDefault();
             const now = getActiveTime();
@@ -1611,7 +1813,7 @@
                 return;
             }
 
-            // GEOFENCING VALIDATION (Bypassed for Izin ONLY now, Kodlok MUST be within radius)
+            // GEOFENCING VALIDATION (Bypassed ONLY for Izin, Kodlok must remain inside)
             if (!isIzinMode && !simulatedGPS) {
                 showToast("Presensi Ditolak! Anda terdeteksi berada di luar radius lokasi sekolah.", "error");
                 return;
@@ -1695,7 +1897,7 @@
             };
 
             records.push(newRecord);
-            saveDataToLocalStorage();
+            saveDatabaseToDrive();
             
             const successMsg = `Absen MASUK ${session.toUpperCase()} berhasil direkam!`;
             showToast(successMsg, 'success');
@@ -1736,7 +1938,7 @@
             const isPiket = currentStatus.startsWith("Piket");
             const isKodlok = currentStatus.startsWith("Kodlok");
 
-            // GPS GEOFENCING check (Bypassed for Izin ONLY now, Kodlok MUST be within radius)
+            // GPS GEOFENCING check (Bypassed ONLY for Izin)
             if (!isIzinMode && !simulatedGPS) {
                 showToast("Presensi Ditolak! Anda berada di luar radius lokasi sekolah.", "error");
                 return;
@@ -1806,9 +2008,9 @@
             };
 
             records.push(newRecord);
-            saveDataToLocalStorage();
+            saveDatabaseToDrive();
             
-            showToast(`Absen PULANG ${session.toUpperCase()} terekam!`, 'success');
+            showToast("Absen PULANG terekam!", 'success');
 
             const alertText = `🚪 <b>Absensi Pulang Baru</b>\n\n👤 Nama: <b>${teacherObj.name}</b>\n⏰ Waktu: ${now.toLocaleTimeString('id-ID')} WIB\n📅 Sesi: ${session.toUpperCase()}`;
             
@@ -1906,14 +2108,61 @@
             renderCMSIdentityFields();
             loadTelegramConfig(); 
             renderDailyScheduleBoard();
-
-            // SINKRONISASI PETA GEOFENCE SAAT MEMBUKA PANEL ADMIN
             initGeofenceMap();
         }
 
-        // ==============================================================
-        // INSIALISASI DAN PENGELOLAAN LOKASI PETA INTERAKTIF
-        // ==============================================================
+        // --- 8.1 GEMINI INTEGRATION: AI ATTENDANCE INSIGHTS ADMIN ---
+        window.analyzeAttendanceWithGemini = async function() {
+            if (records.length === 0) {
+                alert("Data log absensi masih kosong.");
+                return;
+            }
+
+            showToast("Gemini AI sedang menganalisis performa KBM...", "info");
+
+            // Format ringkas data KBM untuk dikirim ke LLM
+            const conciseRecords = records.map(r => {
+                const t = teachers.find(x => x.id === r.teacher_id) || { name: 'Guru' };
+                return {
+                    Nama: t.name,
+                    Waktu: r.timestamp,
+                    Sesi: r.session,
+                    Status: r.status,
+                    Kelas: r.class,
+                    Mapel: r.subject,
+                    Terlambat: r.late_minutes || 0
+                };
+            }).slice(0, 50); // Batasi 50 baris data terbaru
+
+            const systemPrompt = "Anda adalah pengawas pendidikan berprestasi di pesantren. Analisis data kehadiran guru berikut, lalu buat kesimpulan laporan dalam format Markdown dengan 3 aspek utama: 1) Ringkasan rasio kehadiran dan kedisiplinan guru, 2) Evaluasi tren waktu mengajar yang paling efektif (pagi vs sore), dan 3) 3 usulan rekomendasi nyata bagi manajemen pesantren untuk meningkatkan kualitas KBM.";
+            const userPrompt = `Berikut data kehadiran asatidz: \n${JSON.stringify(conciseRecords)}`;
+
+            try {
+                const responseText = await callGeminiAPI(userPrompt, systemPrompt);
+                
+                // Tampilkan dalam modal pop-up kustom yang elegan
+                const modal = document.createElement('div');
+                modal.className = "fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4";
+                modal.innerHTML = `
+                    <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[85vh]">
+                        <div class="bg-emerald-800 text-white px-6 py-4 flex justify-between items-center">
+                            <h4 class="font-extrabold text-sm flex items-center gap-1.5"><i class="fa-solid fa-wand-magic-sparkles"></i> Laporan Analisis AI Gemini</h4>
+                            <button onclick="this.closest('.fixed').remove()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div class="p-6 overflow-y-auto text-xs text-slate-700 leading-relaxed whitespace-pre-line space-y-3 prose">
+                            ${responseText}
+                        </div>
+                        <div class="p-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                            <button onclick="this.closest('.fixed').remove()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition">Tutup Laporan</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            } catch (err) {
+                alert("Analisis AI gagal: " + err.message);
+            }
+        };
+
         function initGeofenceMap() {
             const lat = configGeofence.lat || -7.250445;
             const lng = configGeofence.lng || 112.768845;
@@ -1928,20 +2177,16 @@
                 if (!mapContainer) return;
 
                 if (!mapInstance) {
-                    // Buat instance Leaflet Map di container
                     mapInstance = L.map('geofence-map').setView([lat, lng], 16);
                     
-                    // Gunakan Tile Standard OpenStreetMap
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 19,
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     }).addTo(mapInstance);
 
-                    // Buat Draggable Marker
                     mapMarker = L.marker([lat, lng], { draggable: true }).addTo(mapInstance);
                     mapMarker.bindPopup("<b>Titik Pusat Absensi</b><br>Seret pin ini ke lokasi pesantren Anda.").openPopup();
 
-                    // Buat Area Wilayah Lingkaran Geofence
                     mapCircle = L.circle([lat, lng], {
                         color: '#10b981',
                         fillColor: '#10b981',
@@ -1949,19 +2194,16 @@
                         radius: radius
                     }).addTo(mapInstance);
 
-                    // Sinkronisasi Marker Saat Digeser (Drag)
                     mapMarker.on('dragend', function(e) {
                         const position = mapMarker.getLatLng();
                         updateGeofenceCoordinates(position.lat, position.lng);
                     });
 
-                    // Sinkronisasi Klik Peta Langsung
                     mapInstance.on('click', function(e) {
                         mapMarker.setLatLng(e.latlng);
                         updateGeofenceCoordinates(e.latlng.lat, e.latlng.lng);
                     });
                 } else {
-                    // Update Map View Berjalan
                     mapInstance.setView([lat, lng]);
                     mapMarker.setLatLng([lat, lng]);
                     mapCircle.setLatLng([lat, lng]);
@@ -2005,7 +2247,7 @@
             }
             if (mapInstance) mapInstance.setView([latVal, lngVal]);
 
-            window.saveDataToStorage();
+            saveDatabaseToDrive();
             
             if (showAlert) {
                 showToast("Pengaturan Geofence Absensi Berhasil Diperbarui!", "success");
@@ -2255,7 +2497,7 @@
             if (r) {
                 r.class = document.getElementById('edit-log-class').value;
                 r.subject = document.getElementById('edit-log-subject').value;
-                saveDataToLocalStorage();
+                saveDatabaseToDrive();
                 showToast("Log presensi berhasil disunting!", "success");
                 closeEditLogModal();
                 renderAdminPortal();
@@ -2265,7 +2507,7 @@
         window.deleteLogRecord = function(logId) {
             openConfirmDelete("Apakah anda yakin ingin menghapus log riwayat presensi guru ini secara permanen?", () => {
                 records = records.filter(x => x.id !== logId);
-                saveDataToLocalStorage();
+                saveDatabaseToDrive();
                 showToast("Log riwayat presensi berhasil dihapus.", "success");
                 renderAdminPortal();
             });
@@ -2372,100 +2614,6 @@
                         <td class="p-3 font-bold text-slate-800">${t.name}</td>
                         ${dailyCols}
                         <td class="p-3 text-center font-black font-mono ${colorClass} bg-slate-50/80 rounded-r-xl">${totalWeeklyDecimal.toFixed(1)} Jam</td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function renderMonthlyHours() {
-            const container = document.getElementById('wrapper-monthly-hours');
-            if (!container) return;
-
-            const now = getActiveTime();
-            const activeHijri = getHijriParts(now);
-            document.getElementById('monthly-period-label').textContent = `Periode Hijriyah: 1 s/d Akhir ${activeHijri.monthName} ${activeHijri.year} H`;
-
-            const targetLogs = records.filter(r => r.hijri.month === activeHijri.month && r.hijri.year === activeHijri.year);
-
-            container.innerHTML = teachers.map(t => {
-                const loggedDates = [...new Set(targetLogs.filter(r => r.teacher_id === t.id).map(r => r.timestamp.split('T')[0]))];
-                
-                let totalMonthlyHours = 0;
-                loggedDates.forEach(dStr => {
-                    totalMonthlyHours += getTeacherHoursForDay(t.id, dStr);
-                });
-
-                const percent = Math.min(100, (totalMonthlyHours / 140) * 100);
-                
-                let barColor = "bg-rose-500";
-                if (percent >= 80) barColor = "bg-emerald-500";
-                else if (percent >= 40) barColor = "bg-amber-500";
-
-                return `
-                    <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div class="flex items-center gap-3">
-                            <img src="${t.photo || 'https://placehold.co/80x80/cbd5e1/64748b?text=...'}" class="w-10 h-10 rounded-full object-cover border-2 border-emerald-500">
-                            <div>
-                                <h5 class="text-xs font-black text-slate-800 leading-tight">${t.name}</h5>
-                                <span class="text-[9px] text-slate-400 font-semibold uppercase">Total Kehadiran Valid: <strong class="text-emerald-700">${loggedDates.length} Hari</strong></span>
-                            </div>
-                        </div>
-
-                        <div class="flex-grow max-w-md w-full">
-                            <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-1">
-                                <span>Pencapaian: <strong class="text-slate-800">${totalMonthlyHours.toFixed(1)} / 140 Jam</strong></span>
-                                <span>${percent.toFixed(0)}%</span>
-                            </div>
-                            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                                <div class="${barColor} h-full transition-all duration-500" style="width: ${percent}%"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderYearlyHours() {
-            const container = document.getElementById('tbl-yearly-hours');
-            if (!container) return;
-
-            const now = getActiveTime();
-            const activeHijri = getHijriParts(now);
-            document.getElementById('yearly-hijri-label').textContent = activeHijri.year;
-
-            const targetYearLogs = records.filter(r => r.hijri.year === activeHijri.year);
-
-            container.innerHTML = teachers.map(t => {
-                let totalYearlyHours = 0;
-                let monthCellsHtml = "";
-
-                for (let m = 1; m <= 12; m++) {
-                    const monthLogs = targetYearLogs.filter(r => r.teacher_id === t.id && r.hijri.month === m);
-                    const uniqueDates = [...new Set(monthLogs.map(r => r.timestamp.split('T')[0]))];
-                    
-                    let monthHours = 0;
-                    uniqueDates.forEach(dStr => {
-                        monthHours += getTeacherHoursForDay(t.id, dStr);
-                    });
-
-                    totalYearlyHours += monthHours;
-
-                    if (monthHours === 0) {
-                        monthCellsHtml += `<td class="p-3 text-center text-slate-300 font-medium">-</td>`;
-                    } else {
-                        monthCellsHtml += `<td class="p-3 text-center text-slate-700 font-semibold font-mono text-xs">${monthHours.toFixed(1)}j</td>`;
-                    }
-                }
-
-                let totalColorClass = "text-rose-600 bg-rose-50/50";
-                if (totalYearlyHours >= 500) totalColorClass = "text-emerald-700 bg-emerald-50/50";
-                else if (totalYearlyHours >= 200) totalColorClass = "text-amber-600 bg-amber-50/50";
-
-                return `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="p-3 font-bold text-slate-800 sticky left-0 bg-white z-10 border-r border-slate-100">${t.name}</td>
-                        ${monthCellsHtml}
-                        <td class="p-3 text-center font-black font-mono ${totalColorClass} rounded-r-xl">${totalYearlyHours.toFixed(1)} Jam</td>
                     </tr>
                 `;
             }).join('');
@@ -2588,7 +2736,7 @@
             }
 
             teacher.password = p;
-            saveDataToLocalStorage();
+            saveDatabaseToDrive();
             showToast(`Password guru ${teacher.name} diperbarui!`, "success");
             renderTableGuruAdmin();
         };
@@ -2680,7 +2828,7 @@
                         preview.classList.remove('hidden');
                         document.getElementById('form-guru-pic-fallback').classList.add('hidden');
                         
-                        showToast("Foto guru berhasil dimuat and dipotong proporsional!", "success");
+                        showToast("Foto guru berhasil dimuat!", "success");
                     };
                     img.src = e.target.result;
                 };
@@ -2736,19 +2884,19 @@
                 showToast("Pendaftaran guru baru sukses direkam!", "success");
             }
 
-            saveDataToLocalStorage();
+            saveDatabaseToDrive();
             closeModalGuru();
             renderAdminPortal();
         };
 
         window.deleteTeacher = function(id) {
-            const t = teachers.find(g => g.id !== id);
+            const t = teachers.find(g => g.id === id);
             if (!t) return;
 
             openConfirmDelete(`Apakah Anda yakin ingin menghapus data guru "${t.name}" beserta seluruh riwayat absensinya?`, () => {
                 teachers = teachers.filter(g => g.id !== id);
                 records = records.filter(r => r.teacher_id !== id);
-                saveDataToLocalStorage();
+                saveDatabaseToDrive();
                 showToast("Data guru berhasil dihapus dari sistem.", "success");
                 renderAdminPortal();
             });
@@ -2829,31 +2977,33 @@
             const base64Image = canvas.toDataURL('image/png');
 
             if (cropTargetType === 'header') {
-                localStorage.setItem('sadig_logo', base64Image);
+                applicationLogo = base64Image;
                 showToast("Logo header utama diperbarui secara permanen!", "success");
             } else {
-                localStorage.setItem('sadig_login_logo', base64Image);
+                applicationLoginLogo = base64Image;
                 showToast("Logo halaman log in berhasil disesuaikan!", "success");
             }
 
             closeCropModal();
             updateAppLogos();
+            saveDatabaseToDrive();
         };
 
         window.resetLogo = function(type) {
             if (type === 'header') {
-                localStorage.removeItem('sadig_logo');
+                applicationLogo = "";
                 showToast("Logo header dikembalikan ke standar.", "success");
             } else {
-                localStorage.removeItem('sadig_login_logo');
+                applicationLoginLogo = "";
                 showToast("Logo halaman log in di-reset.", "success");
             }
             updateAppLogos();
+            saveDatabaseToDrive();
         };
 
         function updateAppLogos() {
-            const logoHeader = localStorage.getItem('sadig_logo');
-            const logoLogin = localStorage.getItem('sadig_login_logo');
+            const logoHeader = applicationLogo;
+            const logoLogin = applicationLoginLogo;
 
             const imgH = document.getElementById('app-logo');
             const fallH = document.getElementById('app-logo-fallback');
@@ -2920,8 +3070,8 @@
 
         // --- 13. CMS INSTANSI PENAMAAN IDENTITY ---
         function renderCMSIdentityFields() {
-            const currentTitle = localStorage.getItem('sadig_title') || "PPT DIGITAL SYSTEMS™";
-            const currentSubtitle = localStorage.getItem('sadig_subtitle') || "Pondok Pesantren Tholabuddin";
+            const currentTitle = applicationTitle;
+            const currentSubtitle = applicationSubtitle;
 
             document.getElementById('setting-app-title').value = currentTitle;
             document.getElementById('setting-app-subtitle').value = currentSubtitle;
@@ -2939,11 +3089,12 @@
                 return;
             }
 
-            localStorage.setItem('sadig_title', title);
-            localStorage.setItem('sadig_subtitle', subtitle);
+            applicationTitle = title;
+            applicationSubtitle = subtitle;
             showToast("Nama instansi sekolah berhasil disimpan!", "success");
 
             renderCMSIdentityFields();
+            saveDatabaseToDrive();
         };
 
         // --- 14. ADMIN PASSWORD UPDATE CMS ---
@@ -3163,10 +3314,14 @@
         };
 
         // --- 17. PERSISTENCE STORAGE ---
-        function saveDataToLocalStorage() {
+        function saveDataToLocalStorage(toDriveAsWell = false) {
             localStorage.setItem('sadig_teachers', JSON.stringify(teachers));
             localStorage.setItem('sadig_records', JSON.stringify(records));
             localStorage.setItem('sadig_geofence', JSON.stringify(configGeofence));
+            localStorage.setItem('sadig_logo', applicationLogo);
+            localStorage.setItem('sadig_login_logo', applicationLoginLogo);
+            localStorage.setItem('sadig_title', applicationTitle);
+            localStorage.setItem('sadig_subtitle', applicationSubtitle);
         }
 
         // --- 18. SYSTEM RUNTIME BOOTSTRAPPING (ONLOAD) ---
@@ -3174,24 +3329,15 @@
             updateClock();
             setInterval(updateClock, 1000);
 
-            updateAppLogos();
             setSimulatedGPS(simulatedGPS);
 
             if (simulatedTime) {
                 document.getElementById('sim-time-indicator').textContent = simulatedTime + " WIB";
             }
 
-            if (currentUser) {
-                updateIdentityHeader();
-                if (currentUser.role === 'ADMIN') {
-                    switchView('admin');
-                } else {
-                    switchView('guru');
-                }
-            } else {
-                switchView('login');
-            }
+            // Inisialisasi basis data - Ambil langsung dari Google Drive (GAS API)
+            fetchDatabaseFromDrive();
         };
     </script>
 </body>
-    </html>
+                            </html>
